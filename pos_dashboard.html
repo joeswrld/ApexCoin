@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ ApexCoin PoS Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .consensus-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.7;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .tab.active {
+            background: rgba(102, 126, 234, 0.3);
+            color: #fff;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .success {
+            background: rgba(56, 239, 125, 0.2);
+            border: 2px solid #38ef7d;
+            color: #38ef7d;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .error {
+            background: rgba(235, 51, 73, 0.2);
+            border: 2px solid #eb3349;
+            color: #ff6b6b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .warning {
+            background: rgba(240, 147, 251, 0.2);
+            border: 2px solid #f093fb;
+            color: #f5576c;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .info {
+            background: rgba(79, 172, 254, 0.2);
+            border: 2px solid #4facfe;
+            color: #4facfe;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .validator-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .validator-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: #667eea;
+        }
+        
+        .validator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .validator-address {
+            font-family: monospace;
+            font-size: 0.9em;
+            opacity: 0.7;
+            word-break: break-all;
+        }
+        
+        .validator-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .mini-stat {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .mini-stat-label {
+            font-size: 0.75em;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .mini-stat-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .active-badge {
+            background: rgba(56, 239, 125, 0.2);
+            color: #38ef7d;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .inactive-badge {
+            background: rgba(235, 51, 73, 0.2);
+            color: #ff6b6b;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
+        .proposal-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .proposal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        
+        .proposal-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .proposal-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(79, 172, 254, 0.2);
+            color: #4facfe;
+        }
+        
+        .status-passed {
+            background: rgba(56, 239, 125, 0.2);
+            color: #38ef7d;
+        }
+        
+        .status-rejected {
+            background: rgba(235, 51, 73, 0.2);
+            color: #ff6b6b;
+        }
+        
+        .vote-bar {
+            margin: 20px 0;
+        }
+        
+        .vote-progress {
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .vote-for {
+            height: 100%;
+            background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%);
+            float: left;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+        
+        .vote-against {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a6f 100%);
+            float: right;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚡ ApexCoin PoS</div>
+            <div class="consensus-badge">🔒 Proof-of-Stake Consensus</div>
+        </div>
+        
+        <div class="network-stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Supply</div>
+                <div class="stat-value" id="total-supply">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Staked</div>
+                <div class="stat-value" id="total-staked">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Staking Ratio</div>
+                <div class="stat-value" id="staking-ratio">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Active Validators</div>
+                <div class="stat-value" id="active-validators">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Current Epoch</div>
+                <div class="stat-value" id="current-epoch">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Annual Inflation</div>
+                <div class="stat-value" id="inflation">-</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('validators')">🔒 Validators</button>
+            <button class="tab" onclick="showTab('stake')">💰 Stake</button>
+            <button class="tab" onclick="showTab('delegate')">🤝 Delegate</button>
+            <button class="tab" onclick="showTab('governance')">🏛️ Governance</button>
+            <button class="tab" onclick="showTab('wallet')">👛 Wallet</button>
+        </div>
+        
+        <!-- Validators Tab -->
+        <div id="validators-tab" class="tab-content active">
+            <div class="card">
+                <div class="card-title">🔒 Active Validators</div>
+                <div id="validators-list"></div>
+            </div>
+        </div>
+        
+        <!-- Stake Tab -->
+        <div id="stake-tab" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">🔒 Become a Validator</div>
+                    <div class="info">
+                        <strong>Requirements:</strong><br>
+                        • Minimum stake: 1,000 APEX<br>
+                        • Maintain uptime and performance<br>
+                        • Risk of slashing for misbehavior
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Your Address</label>
+                        <input type="text" id="validator-address" placeholder="Enter your wallet address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Stake Amount (APEX)</label>
+                        <input type="number" id="stake-amount" placeholder="Minimum: 1,000" min="1000">
+                    </div>
+                    
+                    <button onclick="registerValidator()">🔒 Register as Validator</button>
+                    <div id="register-result"></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">📊 Validator Economics</div>
+                    <div class="validator-stats">
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Commission Rate</div>
+                            <div class="mini-stat-value">10%</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Slashing Penalty</div>
+                            <div class="mini-stat-value">5%</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Offline Penalty</div>
+                            <div class="mini-stat-value">1%/epoch</div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-label">Unbonding Period</div>
+                            <div class="mini-stat-value">7 days</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Delegate Tab -->
+        <div id="delegate-tab" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">🤝 Delegate Stake</div>
+                    <div class="info">
+                        Delegate your tokens to a validator and earn rewards while maintaining custody of your funds.
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Your Address</label>
+                        <input type="text" id="delegator-address" placeholder="Enter your wallet address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Validator Address</label>
+                        <select id="delegate-validator">
+                            <option value="">Select a validator...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Amount (APEX)</label>
+                        <input type="number" id="delegate-amount" placeholder="Minimum: 10" min="10">
+                    </div>
+                    
+                    <button onclick="delegateStake()">🤝 Delegate</button>
+                    <div id="delegate-result"></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">📤 Undelegate Stake</div>
+                    <div class="warning">
+                        ⚠️ Unbonding period: 7 days<br>
+                        Your tokens will be locked during this period.
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Your Address</label>
+                        <input type="text" id="undelegator-address" placeholder="Enter your wallet address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Validator Address</label>
+                        <input type="text" id="undelegate-validator" placeholder="Validator address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Amount (APEX)</label>
+                        <input type="number" id="undelegate-amount" placeholder="Amount to undelegate">
+                    </div>
+                    
+                    <button onclick="undelegateStake()">📤 Undelegate</button>
+                    <div id="undelegate-result"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Governance Tab -->
+        <div id="governance-tab" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">🏛️ Create Proposal</div>
+                    <div class="info">
+                        Voting power based on staked + delegated tokens.<br>
+                        Minimum 1% of total stake required to propose.
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Your Address</label>
+                        <input type="text" id="proposer-address" placeholder="Enter your wallet address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Proposal Title</label>
+                        <input type="text" id="proposal-title" placeholder="Short, descriptive title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="proposal-description" rows="4" placeholder="Detailed explanation of the proposal"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="proposal-type">
+                            <option value="parameter">Parameter Change</option>
+                            <option value="upgrade">Protocol Upgrade</option>
+                            <option value="funding">Funding Request</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Parameters (JSON)</label>
+                        <textarea id="proposal-params" rows="3" placeholder='{"inflation_rate": 0.04}'></textarea>
+                    </div>
+                    
+                    <button onclick="createProposal()">🏛️ Submit Proposal</button>
+                    <div id="proposal-result"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📋 Active Proposals</div>
+                <div id="proposals-list"></div>
+            </div>
+        </div>
+        
+        <!-- Wallet Tab -->
+        <div id="wallet-tab" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">👛 Create Wallet</div>
+                    <button onclick="createWallet()">🔑 Generate New Wallet</button>
+                    <div id="wallet-result"></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">💵 Check Balance</div>
+                    <div class="form-group">
+                        <label>Wallet Address</label>
+                        <input type="text" id="balance-address" placeholder="Enter wallet address">
+                    </div>
+                    <button onclick="checkBalance()">Check Balance</button>
+                    <div id="balance-result"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">⛏️ Mine Block (PoS)</div>
+                <div class="info">
+                    In PoS, validators are selected based on their stake weight.<br>
+                    Click to simulate block production.
+                </div>
+                <button onclick="mineBlock()">⚡ Produce Block</button>
+                <div id="mine-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            if (tabName === 'validators') {
+                loadValidators();
+            } else if (tabName === 'governance') {
+                loadProposals();
+            } else if (tabName === 'delegate') {
+                loadValidatorsForSelect();
+            }
+        }
+
+        async function loadNetworkInfo() {
+            try {
+                const response = await fetch(`${API_URL}/info`);
+                const data = await response.json();
+                
+                document.getElementById('total-supply').textContent = 
+                    (data.total_supply / 1000000).toFixed(2) + 'M';
+                document.getElementById('total-staked').textContent = 
+                    (data.total_staked / 1000000).toFixed(2) + 'M';
+                document.getElementById('staking-ratio').textContent = 
+                    (data.staking_ratio * 100).toFixed(1) + '%';
+                document.getElementById('active-validators').textContent = 
+                    data.active_validators + '/' + data.total_validators;
+                document.getElementById('current-epoch').textContent = data.current_epoch;
+                document.getElementById('inflation').textContent = 
+                    (data.inflation_rate * 100).toFixed(1) + '%';
+            } catch (error) {
+                console.error('Error loading network info:', error);
+            }
+        }
+
+        async function loadValidators() {
+            try {
+                const response = await fetch(`${API_URL}/validators`);
+                const data = await response.json();
+                
+                const validatorsDiv = document.getElementById('validators-list');
+                
+                if (data.validators.length === 0) {
+                    validatorsDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px;">No validators yet</p>';
+                    return;
+                }
+                
+                validatorsDiv.innerHTML = data.validators.map((v, index) => `
+                    <div class="validator-card">
+                        <div class="validator-header">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
+                                    <strong style="font-size: 1.2em;">#${index + 1}</strong>
+                                    <span class="${v.is_active ? 'active-badge' : 'inactive-badge'}">
+                                        ${v.is_active ? '✓ Active' : '✗ Inactive'}
+                                    </span>
+                                </div>
+                                <div class="validator-address">${v.address}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.8em; opacity: 0.7;">Reputation</div>
+                                <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">
+                                    ${v.reputation_score}/100
+                                </div>
+                            </div>
+                        </div>
+                        <div class="validator-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-label">Own Stake</div>
+                                <div class="mini-stat-value">${v.stake.toLocaleString()}</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-label">Delegated</div>
+                                <div class="mini-stat-value">${v.delegated_stake.toLocaleString()}</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-label">Total Stake</div>
+                                <div class="mini-stat-value">${v.total_stake.toLocaleString()}</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-label">Blocks Produced</div>
+                                <div class="mini-stat-value">${v.blocks_produced}</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-label">Blocks Missed</div>
+                                <div class="mini-stat-value">${v.blocks_missed}</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-label">Delegators</div>
+                                <div class="mini-stat-value">${v.delegators_count}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading validators:', error);
+            }
+        }
+
+        async function loadValidatorsForSelect() {
+            try {
+                const response = await fetch(`${API_URL}/validators`);
+                const data = await response.json();
+                
+                const select = document.getElementById('delegate-validator');
+                select.innerHTML = '<option value="">Select a validator...</option>' +
+                    data.validators
+                        .filter(v => v.is_active)
+                        .map(v => `<option value="${v.address}">${v.address.substring(0, 20)}... (${v.total_stake.toLocaleString()} APEX)</option>`)
+                        .join('');
+            } catch (error) {
+                console.error('Error loading validators:', error);
+            }
+        }
+
+        async function registerValidator() {
+            const address = document.getElementById('validator-address').value;
+            const amount = parseFloat(document.getElementById('stake-amount').value);
+            const resultDiv = document.getElementById('register-result');
+            
+            if (!address || !amount) {
+                resultDiv.innerHTML = '<div class="error">Please fill in all fields</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/validators/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        address: address,
+                        stake_amount: amount
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Validator Registered!</h3>
+                            <p><strong>Address:</strong> ${data.validator.address}</p>
+                            <p><strong>Stake:</strong> ${data.validator.stake.toLocaleString()} APEX</p>
+                            <p><strong>Status:</strong> ${data.validator.is_active ? 'Active' : 'Inactive'}</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('validator-address').value = '';
+                    document.getElementById('stake-amount').value = '';
+                    
+                    setTimeout(() => {
+                        loadNetworkInfo();
+                        loadValidators();
+                    }, 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function delegateStake() {
+            const delegator = document.getElementById('delegator-address').value;
+            const validator = document.getElementById('delegate-validator').value;
+            const amount = parseFloat(document.getElementById('delegate-amount').value);
+            const resultDiv = document.getElementById('delegate-result');
+            
+            if (!delegator || !validator || !amount) {
+                resultDiv.innerHTML = '<div class="error">Please fill in all fields</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/delegate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        delegator: delegator,
+                        validator_address: validator,
+                        amount: amount
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Delegation Successful!</h3>
+                            <p><strong>Amount:</strong> ${data.amount.toLocaleString()} APEX</p>
+                            <p><strong>Validator:</strong> ${data.validator.substring(0, 30)}...</p>
+                            <p><strong>Validator Total Stake:</strong> ${data.validator_total_stake.toLocaleString()} APEX</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('delegator-address').value = '';
+                    document.getElementById('delegate-amount').value = '';
+                    
+                    setTimeout(loadNetworkInfo, 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function undelegateStake() {
+            const delegator = document.getElementById('undelegator-address').value;
+            const validator = document.getElementById('undelegate-validator').value;
+            const amount = parseFloat(document.getElementById('undelegate-amount').value);
+            const resultDiv = document.getElementById('undelegate-result');
+            
+            if (!delegator || !validator || !amount) {
+                resultDiv.innerHTML = '<div class="error">Please fill in all fields</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/undelegate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        delegator: delegator,
+                        validator_address: validator,
+                        amount: amount
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const completionDate = new Date(data.unbonding.completion_time * 1000);
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Undelegation Initiated!</h3>
+                            <p><strong>Amount:</strong> ${data.unbonding.amount.toLocaleString()} APEX</p>
+                            <p><strong>Unbonding Period:</strong> 7 days</p>
+                            <p><strong>Completion:</strong> ${completionDate.toLocaleString()}</p>
+                            <p style="margin-top: 10px; opacity: 0.8;">
+                                Your funds will be available after the unbonding period.
+                            </p>
+                        </div>
+                    `;
+                    
+                    setTimeout(loadNetworkInfo, 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function loadProposals() {
+            try {
+                const response = await fetch(`${API_URL}/governance/proposals`);
+                const data = await response.json();
+                
+                const proposalsDiv = document.getElementById('proposals-list');
+                
+                if (data.proposals.length === 0) {
+                    proposalsDiv.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 40px;">No proposals yet</p>';
+                    return;
+                }
+                
+                proposalsDiv.innerHTML = data.proposals.map(p => {
+                    const totalVotes = p.votes_for + p.votes_against;
+                    const forPercent = totalVotes > 0 ? (p.votes_for / totalVotes * 100) : 0;
+                    const againstPercent = totalVotes > 0 ? (p.votes_against / totalVotes * 100) : 0;
+                    
+                    return `
+                        <div class="proposal-card">
+                            <div class="proposal-header">
+                                <div>
+                                    <div class="proposal-title">${p.title}</div>
+                                    <div style="opacity: 0.7; margin-bottom: 10px;">${p.description}</div>
+                                    <div style="font-size: 0.85em; opacity: 0.6;">
+                                        Type: ${p.type} | Proposer: ${p.proposer.substring(0, 20)}...
+                                    </div>
+                                </div>
+                                <span class="proposal-status status-${p.status}">${p.status.toUpperCase()}</span>
+                            </div>
+                            
+                            <div class="vote-bar">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9em;">
+                                    <span>For: ${p.votes_for.toLocaleString()} (${forPercent.toFixed(1)}%)</span>
+                                    <span>Against: ${p.votes_against.toLocaleString()} (${againstPercent.toFixed(1)}%)</span>
+                                </div>
+                                <div class="vote-progress">
+                                    <div class="vote-for" style="width: ${forPercent}%">
+                                        ${forPercent > 10 ? forPercent.toFixed(0) + '%' : ''}
+                                    </div>
+                                    <div class="vote-against" style="width: ${againstPercent}%">
+                                        ${againstPercent > 10 ? againstPercent.toFixed(0) + '%' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${p.status === 'active' ? `
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                                    <button onclick="voteOnProposal('${p.id}', true)" style="background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);">
+                                        👍 Vote For
+                                    </button>
+                                    <button onclick="voteOnProposal('${p.id}', false)" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);">
+                                        👎 Vote Against
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading proposals:', error);
+            }
+        }
+
+        async function createProposal() {
+            const proposer = document.getElementById('proposer-address').value;
+            const title = document.getElementById('proposal-title').value;
+            const description = document.getElementById('proposal-description').value;
+            const type = document.getElementById('proposal-type').value;
+            const paramsText = document.getElementById('proposal-params').value;
+            const resultDiv = document.getElementById('proposal-result');
+            
+            if (!proposer || !title || !description || !paramsText) {
+                resultDiv.innerHTML = '<div class="error">Please fill in all fields</div>';
+                return;
+            }
+            
+            try {
+                const parameters = JSON.parse(paramsText);
+                
+                const response = await fetch(`${API_URL}/governance/proposals`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        proposer: proposer,
+                        title: title,
+                        description: description,
+                        type: type,
+                        parameters: parameters
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Proposal Created!</h3>
+                            <p><strong>ID:</strong> ${data.proposal.id}</p>
+                            <p><strong>Title:</strong> ${data.proposal.title}</p>
+                            <p><strong>Voting Period:</strong> 7 days</p>
+                        </div>
+                    `;
+                    
+                    // Clear form
+                    document.getElementById('proposal-title').value = '';
+                    document.getElementById('proposal-description').value = '';
+                    document.getElementById('proposal-params').value = '';
+                    
+                    setTimeout(loadProposals, 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function voteOnProposal(proposalId, voteFor) {
+            const voter = prompt('Enter your wallet address:');
+            if (!voter) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/governance/vote`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        proposal_id: proposalId,
+                        voter: voter,
+                        vote_for: voteFor
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(`✅ Vote recorded! You voted ${voteFor ? 'FOR' : 'AGAINST'} the proposal.`);
+                    loadProposals();
+                } else {
+                    alert(`❌ ${data.error}`);
+                }
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        async function createWallet() {
+            try {
+                const response = await fetch(`${API_URL}/wallet/new`);
+                const data = await response.json();
+                
+                document.getElementById('wallet-result').innerHTML = `
+                    <div class="success">
+                        <h3>✅ Wallet Created!</h3>
+                        <p><strong>Address:</strong></p>
+                        <div style="word-break: break-all; font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            ${data.address}
+                        </div>
+                        <p><strong>Private Key:</strong></p>
+                        <div style="word-break: break-all; font-family: monospace; font-size: 0.75em; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            ${data.private_key}
+                        </div>
+                        <div class="warning" style="margin-top: 15px;">
+                            ⚠️ SAVE YOUR PRIVATE KEY! It cannot be recovered.
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('wallet-result').innerHTML = 
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function checkBalance() {
+            const address = document.getElementById('balance-address').value;
+            
+            if (!address) {
+                document.getElementById('balance-result').innerHTML = 
+                    '<div class="error">Please enter an address</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/wallet/balance/${address}`);
+                const data = await response.json();
+                
+                document.getElementById('balance-result').innerHTML = `
+                    <div class="success">
+                        <div style="font-size: 3em; font-weight: 900; text-align: center; margin: 20px 0;">
+                            ${data.balance.toLocaleString()} ${data.symbol}
+                        </div>
+                        <p style="text-align: center; opacity: 0.8;">${address.substring(0, 30)}...</p>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('balance-result').innerHTML = 
+                    `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function mineBlock() {
+            const resultDiv = document.getElementById('mine-result');
+            
+            resultDiv.innerHTML = '<div class="info">⏳ Selecting validator and producing block...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/mine`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>⚡ Block Produced!</h3>
+                            <p><strong>Block:</strong> #${data.block.index}</p>
+                            <p><strong>Validator:</strong> ${data.block.validator.substring(0, 30)}...</p>
+                            <p><strong>Epoch:</strong> ${data.block.epoch}</p>
+                            <p><strong>Transactions:</strong> ${data.block.transactions}</p>
+                        </div>
+                    `;
+                    
+                    setTimeout(loadNetworkInfo, 1000);
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Initial load
+        loadNetworkInfo();
+        loadValidators();
+        
+        // Auto-refresh
+        setInterval(loadNetworkInfo, 10000);
+    </script>
+</body>
+</html>
