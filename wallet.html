@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Secure ApexCoin Wallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .wallet-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .wallet-info {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .balance-display {
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .address-display {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9em;
+            word-break: break-all;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+        
+        .success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .error {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            cursor: pointer;
+            border: none;
+            white-space: nowrap;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            width: auto;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+
+        .secure-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🔐 Secure Wallet</div>
+            <div style="color: #666; font-size: 1.2em;">ApexCoin Digital Wallet</div>
+        </div>
+        
+        <!-- No Wallet State -->
+        <div id="no-wallet" class="wallet-section">
+            <div class="tabs">
+                <button class="tab active" onclick="showAuthTab('signup')">📝 Sign Up</button>
+                <button class="tab" onclick="showAuthTab('login')">🔑 Login</button>
+            </div>
+            
+            <!-- Sign Up Tab -->
+            <div id="signup-tab" class="tab-content active">
+                <div class="section-title">📝 Create New Wallet</div>
+                <div class="info">
+                    Create a secure wallet account with username and password. Your credentials will be used to encrypt your private key.
+                </div>
+                
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="signup-username" placeholder="Choose a username">
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signup-password" placeholder="Choose a strong password">
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="signup-confirm" placeholder="Re-enter your password">
+                </div>
+                
+                <button onclick="signUp()">🔑 Create Wallet Account</button>
+                <div id="signup-result"></div>
+            </div>
+            
+            <!-- Login Tab -->
+            <div id="login-tab" class="tab-content">
+                <div class="section-title">🔑 Login to Wallet</div>
+                <div class="info">
+                    Login with your username and password to access your wallet.
+                </div>
+                
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="Enter your username">
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                
+                <button onclick="login()">🔓 Login to Wallet</button>
+                <div id="login-result"></div>
+            </div>
+        </div>
+        
+        <!-- Wallet Active State -->
+        <div id="wallet-active" class="hidden">
+            <div class="wallet-section">
+                <div class="section-title">
+                    💰 My Wallet
+                    <span class="secure-badge">🔒 Secure</span>
+                </div>
+                
+                <div class="balance-display" id="balance">0.00 APEX</div>
+                
+                <div class="wallet-info">
+                    <strong style="display: block; margin-bottom: 10px;">Your Address:</strong>
+                    <div class="address-display">
+                        <span id="wallet-address">-</span>
+                        <button class="copy-btn" onclick="copyAddress()">Copy</button>
+                    </div>
+                    <div style="font-size: 0.9em; color: #666; margin-top: 10px;">
+                        ℹ️ Share this address to receive coins
+                    </div>
+                </div>
+                
+                <button class="btn-secondary" onclick="refreshBalance()" style="margin-bottom: 10px;">
+                    🔄 Refresh Balance
+                </button>
+                <button class="btn-danger" onclick="logoutWallet()">
+                    🚪 Logout Wallet
+                </button>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('send')">📤 Send Coins</button>
+                <button class="tab" onclick="showTab('receive')">📥 Receive Coins</button>
+                <button class="tab" onclick="showTab('faucet')">🚰 Get Free Coins</button>
+            </div>
+            
+            <!-- Send Tab -->
+            <div id="send-tab" class="tab-content active">
+                <div class="wallet-section">
+                    <div class="section-title">📤 Send ApexCoin</div>
+                    <div class="warning">
+                        ⚠️ Double-check the recipient address. Transactions cannot be reversed!
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Recipient Address</label>
+                        <input type="text" id="send-recipient" placeholder="Enter recipient's wallet address">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Amount (APEX)</label>
+                        <input type="number" id="send-amount" placeholder="0.00" step="0.001" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Transaction Fee (APEX)</label>
+                        <input type="number" id="send-fee" value="0.001" step="0.001" min="0.001">
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            Minimum fee: 0.001 APEX
+                        </small>
+                    </div>
+                    
+                    <button onclick="sendCoins()">📤 Send Coins</button>
+                    <button onclick="sendAndMine()" class="btn-secondary" style="margin-top: 10px;">
+                        ⚡ Send & Mine Block
+                    </button>
+                    <div id="send-result"></div>
+                </div>
+            </div>
+            
+            <!-- Receive Tab -->
+            <div id="receive-tab" class="tab-content">
+                <div class="wallet-section">
+                    <div class="section-title">📥 Receive ApexCoin</div>
+                    <div class="info">
+                        Share your wallet address with others to receive coins.
+                    </div>
+                    
+                    <div style="text-align: center; padding: 40px;">
+                        <div style="font-size: 1.2em; font-weight: 600; margin-bottom: 20px;">
+                            Your Wallet Address:
+                        </div>
+                        <div class="address-display" style="font-size: 1.1em; display: block;">
+                            <div id="receive-address" style="margin-bottom: 15px;">-</div>
+                            <button class="copy-btn" onclick="copyAddress()" style="width: auto;">
+                                📋 Copy Address
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Faucet Tab -->
+            <div id="faucet-tab" class="tab-content">
+                <div class="wallet-section">
+                    <div class="section-title">🚰 Free Coin Faucet</div>
+                    <div class="info">
+                        Get 100 free APEX coins for testing! (Testnet only)
+                    </div>
+                    
+                    <button onclick="claimFaucet()">🚰 Claim 100 APEX</button>
+                    <div id="faucet-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        
+        // Secure wallet storage (in-memory only)
+        let activeWallet = {
+            address: null,
+            privateKey: null,
+            publicKey: null,
+            username: null
+        };
+
+        // In-memory user database (simulated)
+        let userDatabase = {};
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        function showAuthTab(tabName) {
+            const tabs = document.querySelectorAll('#no-wallet .tab');
+            const contents = document.querySelectorAll('#no-wallet .tab-content');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // Simple encryption/decryption using password (XOR-based for demo)
+        function encryptData(data, password) {
+            let encrypted = '';
+            for (let i = 0; i < data.length; i++) {
+                encrypted += String.fromCharCode(
+                    data.charCodeAt(i) ^ password.charCodeAt(i % password.length)
+                );
+            }
+            return btoa(encrypted); // Base64 encode
+        }
+
+        function decryptData(encryptedData, password) {
+            try {
+                const encrypted = atob(encryptedData); // Base64 decode
+                let decrypted = '';
+                for (let i = 0; i < encrypted.length; i++) {
+                    decrypted += String.fromCharCode(
+                        encrypted.charCodeAt(i) ^ password.charCodeAt(i % password.length)
+                    );
+                }
+                return decrypted;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function signUp() {
+            const username = document.getElementById('signup-username').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm').value;
+            const resultDiv = document.getElementById('signup-result');
+
+            // Validation
+            if (!username || !password || !confirmPassword) {
+                resultDiv.innerHTML = '<div class="error">❌ Please fill in all fields</div>';
+                return;
+            }
+
+            if (username.length < 3) {
+                resultDiv.innerHTML = '<div class="error">❌ Username must be at least 3 characters</div>';
+                return;
+            }
+
+            if (password.length < 6) {
+                resultDiv.innerHTML = '<div class="error">❌ Password must be at least 6 characters</div>';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                resultDiv.innerHTML = '<div class="error">❌ Passwords do not match</div>';
+                return;
+            }
+
+            // Check if username exists
+            if (userDatabase[username]) {
+                resultDiv.innerHTML = '<div class="error">❌ Username already exists</div>';
+                return;
+            }
+
+            try {
+                // Create wallet on blockchain
+                const response = await fetch(`${API_URL}/wallet/new`);
+                const data = await response.json();
+
+                // Encrypt private key with password
+                const encryptedPrivateKey = encryptData(data.private_key, password);
+                const encryptedPublicKey = encryptData(data.public_key, password);
+
+                // Store user data (encrypted)
+                userDatabase[username] = {
+                    address: data.address,
+                    encryptedPrivateKey: encryptedPrivateKey,
+                    encryptedPublicKey: encryptedPublicKey,
+                    createdAt: new Date().toISOString()
+                };
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Wallet Account Created Successfully!</h3>
+                        <p><strong>Username:</strong> ${username}</p>
+                        <p><strong>Wallet Address:</strong></p>
+                        <div style="word-break: break-all; font-family: monospace; font-size: 0.9em; margin: 10px 0;">
+                            ${data.address}
+                        </div>
+                        <p style="margin-top: 15px;">
+                            ⚠️ <strong>IMPORTANT:</strong> Remember your password! It cannot be recovered.
+                        </p>
+                        <p style="margin-top: 10px;">
+                            Logging you in...
+                        </p>
+                    </div>
+                `;
+
+                // Auto-login after signup
+                setTimeout(() => {
+                    activeWallet = {
+                        address: data.address,
+                        privateKey: data.private_key,
+                        publicKey: data.public_key,
+                        username: username
+                    };
+                    activateWallet();
+                }, 2000);
+
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Error creating wallet: ${error.message}</div>`;
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const resultDiv = document.getElementById('login-result');
+
+            if (!username || !password) {
+                resultDiv.innerHTML = '<div class="error">❌ Please enter username and password</div>';
+                return;
+            }
+
+            // Check if user exists
+            const userData = userDatabase[username];
+            if (!userData) {
+                resultDiv.innerHTML = '<div class="error">❌ Invalid username or password</div>';
+                return;
+            }
+
+            // Decrypt private key with password
+            const privateKey = decryptData(userData.encryptedPrivateKey, password);
+            const publicKey = decryptData(userData.encryptedPublicKey, password);
+
+            if (!privateKey || !publicKey) {
+                resultDiv.innerHTML = '<div class="error">❌ Invalid username or password</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = `
+                <div class="success">
+                    ✅ Login successful! Loading your wallet...
+                </div>
+            `;
+
+            // Activate wallet
+            setTimeout(() => {
+                activeWallet = {
+                    address: userData.address,
+                    privateKey: privateKey,
+                    publicKey: publicKey,
+                    username: username
+                };
+                activateWallet();
+            }, 1000);
+        }
+
+        async function createWallet() {
+            try {
+                const response = await fetch(`${API_URL}/wallet/new`);
+                const data = await response.json();
+                
+                // Store wallet data securely in memory
+                activeWallet = {
+                    address: data.address,
+                    privateKey: data.private_key,
+                    publicKey: data.public_key
+                };
+                
+                document.getElementById('create-result').innerHTML = `
+                    <div class="success">
+                        <h3>✅ Wallet Created Successfully!</h3>
+                        <p><strong>IMPORTANT:</strong> Your wallet is active for this session only.</p>
+                        <p>Your private key is stored securely in memory and will never be displayed.</p>
+                        <p style="margin-top: 15px;">
+                            <strong>Address:</strong><br>
+                            ${data.address}
+                        </p>
+                    </div>
+                `;
+                
+                // Activate wallet interface
+                setTimeout(() => {
+                    activateWallet();
+                }, 2000);
+                
+            } catch (error) {
+                document.getElementById('create-result').innerHTML = 
+                    `<div class="error">❌ Error creating wallet: ${error.message}</div>`;
+            }
+        }
+
+        function activateWallet() {
+            document.getElementById('no-wallet').classList.add('hidden');
+            document.getElementById('wallet-active').classList.remove('hidden');
+            
+            document.getElementById('wallet-address').textContent = activeWallet.address;
+            document.getElementById('receive-address').textContent = activeWallet.address;
+            
+            // Update header to show logged in user
+            const header = document.querySelector('.header');
+            const userInfo = document.createElement('div');
+            userInfo.id = 'user-info';
+            userInfo.style.marginTop = '15px';
+            userInfo.style.color = '#666';
+            userInfo.innerHTML = `👤 Logged in as: <strong>${activeWallet.username}</strong>`;
+            
+            // Remove existing user info if any
+            const existingInfo = document.getElementById('user-info');
+            if (existingInfo) existingInfo.remove();
+            
+            header.appendChild(userInfo);
+            
+            refreshBalance();
+        }
+
+        async function refreshBalance() {
+            if (!activeWallet.address) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/wallet/balance/${activeWallet.address}`);
+                const data = await response.json();
+                
+                document.getElementById('balance').textContent = 
+                    `${data.balance.toFixed(4)} ${data.symbol}`;
+                    
+            } catch (error) {
+                console.error('Error refreshing balance:', error);
+            }
+        }
+
+        async function sendCoins() {
+            const recipient = document.getElementById('send-recipient').value;
+            const amount = parseFloat(document.getElementById('send-amount').value);
+            const fee = parseFloat(document.getElementById('send-fee').value);
+            const resultDiv = document.getElementById('send-result');
+            
+            if (!recipient || !amount) {
+                resultDiv.innerHTML = 
+                    '<div class="error">❌ Please enter recipient address and amount</div>';
+                return;
+            }
+            
+            if (fee < 0.001) {
+                resultDiv.innerHTML = 
+                    '<div class="error">❌ Minimum fee is 0.001 APEX</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/transactions/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sender_address: activeWallet.address,
+                        recipient_address: recipient,
+                        amount: amount,
+                        private_key: activeWallet.privateKey,
+                        fee: fee
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="warning">
+                            <h3>⏳ Transaction Pending...</h3>
+                            <p><strong>Amount:</strong> ${amount} APEX</p>
+                            <p><strong>Fee:</strong> ${fee} APEX</p>
+                            <p><strong>Total:</strong> ${amount + fee} APEX</p>
+                            <p style="margin-top: 15px;">
+                                💡 Your transaction is waiting to be confirmed. It will be included when the next block is mined.
+                            </p>
+                            <p style="margin-top: 10px;">
+                                ⚡ Click "Send & Mine Block" to confirm it immediately!
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Refresh balance
+                    setTimeout(refreshBalance, 1000);
+                } else {
+                    resultDiv.innerHTML = 
+                        `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = 
+                    `<div class="error">❌ Error sending coins: ${error.message}</div>`;
+            }
+        }
+
+        async function sendAndMine() {
+            const recipient = document.getElementById('send-recipient').value;
+            const amount = parseFloat(document.getElementById('send-amount').value);
+            const fee = parseFloat(document.getElementById('send-fee').value);
+            const resultDiv = document.getElementById('send-result');
+            
+            if (!recipient || !amount) {
+                resultDiv.innerHTML = 
+                    '<div class="error">❌ Please enter recipient address and amount</div>';
+                return;
+            }
+            
+            if (fee < 0.001) {
+                resultDiv.innerHTML = 
+                    '<div class="error">❌ Minimum fee is 0.001 APEX</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="info">
+                    <h3>⏳ Processing Transaction...</h3>
+                    <p>Step 1/2: Creating transaction...</p>
+                </div>
+            `;
+            
+            try {
+                // Step 1: Send transaction
+                const sendResponse = await fetch(`${API_URL}/transactions/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sender_address: activeWallet.address,
+                        recipient_address: recipient,
+                        amount: amount,
+                        private_key: activeWallet.privateKey,
+                        fee: fee
+                    })
+                });
+                
+                const sendData = await sendResponse.json();
+                
+                if (!sendResponse.ok) {
+                    resultDiv.innerHTML = `<div class="error">❌ ${sendData.error}</div>`;
+                    return;
+                }
+                
+                // Step 2: Mine block to confirm transaction
+                resultDiv.innerHTML = `
+                    <div class="info">
+                        <h3>⏳ Transaction Created!</h3>
+                        <p>Step 2/2: Mining block to confirm transaction...</p>
+                        <p style="margin-top: 10px;">⛏️ This may take a moment...</p>
+                    </div>
+                `;
+                
+                const mineResponse = await fetch(`${API_URL}/mine`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ miner_address: activeWallet.address })
+                });
+                
+                const mineData = await mineResponse.json();
+                
+                if (mineResponse.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Transaction Confirmed!</h3>
+                            <p><strong>Amount Sent:</strong> ${amount} APEX</p>
+                            <p><strong>Fee:</strong> ${fee} APEX</p>
+                            <p><strong>Recipient:</strong></p>
+                            <div style="word-break: break-all; font-family: monospace; font-size: 0.85em; margin: 5px 0;">
+                                ${recipient}
+                            </div>
+                            <p style="margin-top: 15px;"><strong>Block Mined:</strong> #${mineData.block.index}</p>
+                            <p><strong>Mining Reward:</strong> ${mineData.miner_reward} APEX</p>
+                            <p style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.3); border-radius: 5px;">
+                                💰 Your new balance: ${mineData.new_balance} APEX
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Clear form
+                    document.getElementById('send-recipient').value = '';
+                    document.getElementById('send-amount').value = '';
+                    
+                    // Refresh balance
+                    setTimeout(refreshBalance, 1000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="warning">
+                            <h3>⚠️ Transaction Created but Mining Failed</h3>
+                            <p>Your transaction was created but the block mining failed.</p>
+                            <p style="margin-top: 10px;">The transaction will be confirmed when someone else mines a block.</p>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = 
+                    `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function claimFaucet() {
+            if (!activeWallet.address) return;
+            
+            const resultDiv = document.getElementById('faucet-result');
+            
+            try {
+                const response = await fetch(`${API_URL}/faucet`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: activeWallet.address })
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>🎉 ${data.message}</h3>
+                        <p><strong>New Balance:</strong> ${data.new_balance} APEX</p>
+                    </div>
+                `;
+                
+                // Refresh balance
+                setTimeout(refreshBalance, 1000);
+                
+            } catch (error) {
+                resultDiv.innerHTML = 
+                    `<div class="error">❌ Error claiming faucet: ${error.message}</div>`;
+            }
+        }
+
+        function copyAddress() {
+            if (!activeWallet.address) return;
+            
+            navigator.clipboard.writeText(activeWallet.address).then(() => {
+                alert('✅ Address copied to clipboard!');
+            });
+        }
+
+        function logoutWallet() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear wallet data from memory
+                const username = activeWallet.username;
+                activeWallet = {
+                    address: null,
+                    privateKey: null,
+                    publicKey: null,
+                    username: null
+                };
+                
+                // Reset UI
+                document.getElementById('no-wallet').classList.remove('hidden');
+                document.getElementById('wallet-active').classList.add('hidden');
+                
+                // Remove user info from header
+                const userInfo = document.getElementById('user-info');
+                if (userInfo) userInfo.remove();
+                
+                // Clear form inputs
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                document.getElementById('login-result').innerHTML = `
+                    <div class="info">
+                        ✅ Logged out successfully. Your wallet data for "${username}" is safely stored.
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-refresh balance every 10 seconds if wallet is active
+        setInterval(() => {
+            if (activeWallet.address) {
+                refreshBalance();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
