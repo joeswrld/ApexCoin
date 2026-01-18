@@ -1,32 +1,31 @@
 {
-    "chain_id": "privacy-pos-testnet",
-    "genesis_time": "2024-01-01T00:00:00Z",
-    "initial_supply": 1000000000,
-    "initial_validators": [
-      {
-        "public_key": "0x0000000000000000000000000000000000000000000000000000000000000001",
-        "staked_amount": 100000,
-        "active": true,
-        "joined_height": 0,
-        "unbonding_until": 0,
-        "slash_count": 0
-      },
-      {
-        "public_key": "0x0000000000000000000000000000000000000000000000000000000000000002",
-        "staked_amount": 100000,
-        "active": true,
-        "joined_height": 0,
-        "unbonding_until": 0,
-        "slash_count": 0
-      },
-      {
-        "public_key": "0x0000000000000000000000000000000000000000000000000000000000000003",
-        "staked_amount": 100000,
-        "active": true,
-        "joined_height": 0,
-        "unbonding_until": 0,
-        "slash_count": 0
-      }
-    ],
-    "pre_allocations": {}
-  }
+  "chain_id": "privacy-pos-testnet",
+  "genesis_time": "2026-01-01T00:00:00Z",
+  "initial_supply": 10000000,
+  "initial_validators": [
+    {
+      "public_key": "814bf9fa132f42693e7cdb24665203256acb17ed33c0f3140859dddc5a9f5d57",
+      "staked_amount": 100000,
+      "active": true,
+      "joined_height": 0,
+      "unbonding_until": 0,
+      "slash_count": 0
+    },
+    {
+      "public_key": "a66efd268fb159c351dd9ef684b36919f784b5a59d2053f6ca98ef3dee0e",
+      "staked_amount": 100000,
+      "active": true,
+      "joined_height": 0,
+      "unbonding_until": 0,
+      "slash_count": 0
+    },
+    {
+      "public_key": "8b1090eb9929cc6079684605bd44530af0fa76867707788f84d3afc76d96ab1e",
+      "staked_amount": 100000,
+      "active": true,
+      "joined_height": 0,
+      "unbonding_until": 0,
+      "slash_count": 0
+    }
+  ]
+}

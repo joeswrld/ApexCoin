@@ -151,8 +151,10 @@ func deriveOneTimeKey(sharedSecret [32]byte, baseKey types.PublicKey) types.Publ
 	h.Write(sharedSecret[:])
 	h.Write(baseKey[:])
 	
+	// FIX: Store hash result in variable first
+	hashResult := sha256.Sum256(h.Sum(nil))
 	var result types.PublicKey
-	copy(result[:], sha256.Sum256(h.Sum(nil))[:])
+	copy(result[:], hashResult[:])
 	return result
 }
 
@@ -164,8 +166,9 @@ func derivePrivateKey(sharedSecret [32]byte, basePriv ed25519.PrivateKey) ed2551
 	h.Write(sharedSecret[:])
 	h.Write(basePriv[:32])
 	
-	derived := sha256.Sum256(h.Sum(nil))
-	return ed25519.PrivateKey(derived[:])
+	// FIX: Store hash result in variable first
+	hashResult := sha256.Sum256(h.Sum(nil))
+	return ed25519.PrivateKey(hashResult[:])
 }
 
 // GenerateKeyImage creates a unique identifier for a UTXO to prevent double-spend
@@ -178,7 +181,8 @@ func GenerateKeyImage(privKey ed25519.PrivateKey, outputKey types.PublicKey) typ
 	h.Write(privKey[:32])
 	h.Write(outputKey[:])
 	
+	hashResult := sha256.Sum256(h.Sum(nil))
 	var keyImage types.PublicKey
-	copy(keyImage[:], sha256.Sum256(h.Sum(nil))[:])
+	copy(keyImage[:], hashResult[:])
 	return keyImage
 }
