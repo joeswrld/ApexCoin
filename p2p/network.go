@@ -87,10 +87,14 @@ func NewNetwork(listenPort int, bootstrapPeers []string) (*Network, error) {
 		peers:  make(map[peer.ID]time.Time),
 	}
 	
-	// Connect to bootstrap peers
+	// Connect to bootstrap peers (don't fail if connections fail)
 	for _, addr := range bootstrapPeers {
-		if err := n.connectPeer(addr); err != nil {
-			fmt.Printf("Failed to connect to bootstrap peer %s: %v\n", addr, err)
+		if addr != "" {
+			if err := n.connectPeer(addr); err != nil {
+				fmt.Printf("Failed to connect to bootstrap peer %s: %v\n", addr, err)
+			} else {
+				fmt.Printf("Connected to bootstrap peer %s\n", addr)
+			}
 		}
 	}
 	
@@ -235,12 +239,25 @@ func (n *Network) connectPeer(addrStr string) error {
 		return err
 	}
 	
+	// Try to extract peer info
 	peerInfo, err := peer.AddrInfoFromP2pAddr(addr)
 	if err != nil {
-		return err
+		// Address doesn't include peer ID - this is expected on bootstrap
+		// The address format /ip4/127.0.0.1/tcp/9001 is valid but needs peer discovery
+		// For now, just return an error but don't crash
+		return fmt.Errorf("bootstrap address missing peer ID (this is ok - will use DHT): %w", err)
 	}
 	
-	return n.host.Connect(n.ctx, *peerInfo)
+	// Connect to the peer
+	ctx, cancel := context.WithTimeout(n.ctx, 10*time.Second)
+	defer cancel()
+	
+	if err := n.host.Connect(ctx, *peerInfo); err != nil {
+		return fmt.Errorf("failed to connect: %w", err)
+	}
+	
+	n.updatePeer(peerInfo.ID)
+	return nil
 }
 
 // updatePeer updates peer's last seen time

@@ -3,7 +3,6 @@ package types
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"time"
 )
 
 // Hash represents a 32-byte hash
@@ -18,6 +17,33 @@ type PublicKey [32]byte
 
 func (pk PublicKey) String() string {
 	return hex.EncodeToString(pk[:])
+}
+
+// MarshalJSON implements json.Marshaler
+func (pk PublicKey) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + pk.String() + `"`), nil
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (pk *PublicKey) UnmarshalJSON(data []byte) error {
+	// Remove quotes
+	if len(data) < 2 {
+		return nil
+	}
+	hexStr := string(data[1 : len(data)-1])
+	
+	// Decode hex string
+	decoded, err := hex.DecodeString(hexStr)
+	if err != nil {
+		return err
+	}
+	
+	if len(decoded) != 32 {
+		return nil // Allow shorter keys for compatibility
+	}
+	
+	copy(pk[:], decoded)
+	return nil
 }
 
 // Signature represents a cryptographic signature
@@ -110,12 +136,12 @@ type UTXO struct {
 
 // ValidatorState tracks validator staking info
 type ValidatorState struct {
-	PublicKey      PublicKey
-	StakedAmount   uint64
-	Active         bool
-	JoinedHeight   uint64
-	UnbondingUntil uint64 // Block height when unbonding completes
-	SlashCount     uint32
+	PublicKey      PublicKey `json:"public_key"`
+	StakedAmount   uint64    `json:"staked_amount"`
+	Active         bool      `json:"active"`
+	JoinedHeight   uint64    `json:"joined_height"`
+	UnbondingUntil uint64    `json:"unbonding_until"`
+	SlashCount     uint32    `json:"slash_count"`
 }
 
 // StakingTx represents a special transaction for staking
@@ -135,11 +161,10 @@ const (
 
 // GenesisConfig defines initial chain state
 type GenesisConfig struct {
-	ChainID          string
-	GenesisTime      time.Time
-	InitialSupply    uint64
-	InitialValidators []ValidatorState
-	PreAllocations   map[Address]uint64
+	ChainID           string           `json:"chain_id"`
+	GenesisTime       string           `json:"genesis_time"`
+	InitialSupply     uint64           `json:"initial_supply"`
+	InitialValidators []ValidatorState `json:"initial_validators"`
 }
 
 // Hash computes transaction hash
